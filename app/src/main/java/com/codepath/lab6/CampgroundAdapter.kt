@@ -47,10 +47,17 @@ class CampgroundAdapter(private val context: Context, private val campgrounds: L
         }
 
         override fun onClick(v: View?) {
-            val campground = campgrounds[absoluteAdapterPosition]
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(CAMPGROUND_EXTRA, campground)
-            context.startActivity(intent)
+            val context = itemView.context
+            val i = Intent(context, DetailActivity::class.java)
+
+            val c = campgrounds[adapterPosition]
+
+            i.putExtra("name", c.name)
+            i.putExtra("description", c.description)
+            i.putExtra("latLong", c.latLong)
+            i.putExtra("imageUrl", c.imageUrl)
+
+            context.startActivity(i)
         }
     }
 }

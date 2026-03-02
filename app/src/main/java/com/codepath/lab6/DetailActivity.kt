@@ -15,22 +15,29 @@ class DetailActivity : AppCompatActivity() {
         val detailTitleTextView: TextView = findViewById(R.id.detailTitle)
         val detailDescriptionTextView: TextView = findViewById(R.id.detailDescription)
 
-        // Retrieve data passed via Intent
+        // 1) Try Park first (old behavior)
+        @Suppress("DEPRECATION")
         val park = intent.getSerializableExtra(PARK_EXTRA) as? Park
-        val campground = intent.getSerializableExtra(CAMPGROUND_EXTRA) as? Campground
 
-        // Populate UI based on type
-        when {
-            park != null -> {
-                detailTitleTextView.text = park.fullName
-                detailDescriptionTextView.text = park.description
+        if (park != null) {
+            detailTitleTextView.text = park.fullName.orEmpty()
+            detailDescriptionTextView.text = park.description.orEmpty()
+            if (!park.imageUrl.isNullOrBlank()) {
                 Glide.with(this).load(park.imageUrl).into(detailImageView)
             }
-            campground != null -> {
-                detailTitleTextView.text = campground.name
-                detailDescriptionTextView.text = campground.description
-                Glide.with(this).load(campground.imageUrl).into(detailImageView)
-            }
+            return
+        }
+
+        // 2) Otherwise treat it as a Campground using string extras (Option A)
+        val name = intent.getStringExtra("name").orEmpty()
+        val description = intent.getStringExtra("description").orEmpty()
+        val imageUrl = intent.getStringExtra("imageUrl").orEmpty()
+
+        detailTitleTextView.text = name
+        detailDescriptionTextView.text = description
+
+        if (imageUrl.isNotBlank()) {
+            Glide.with(this).load(imageUrl).into(detailImageView)
         }
     }
 }

@@ -25,6 +25,10 @@ android {
         buildConfigField("String", "API_KEY", "\"${apikeyProperties['API_KEY']}\"")
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false

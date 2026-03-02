@@ -13,17 +13,24 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import okhttp3.Headers
 import org.json.JSONException
 import kotlin.let
+import kotlinx.serialization.json.Json
 
 private const val TAG = "CampgroundFragment"
-private const val API_KEY = BuildConfig.API_KEY
-private const val CAMPGROUND_URL =
-    "https://developer.nps.gov/api/v1/campgrounds?api_key=${API_KEY}"
+private val CAMPGROUND_URL =
+    "https://developer.nps.gov/api/v1/campgrounds?api_key=${BuildConfig.API_KEY}"
 
 /**
  * A simple [Fragment] subclass.
  * Use the [CampgroundFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+fun createJson() = Json {
+    isLenient = true
+    ignoreUnknownKeys = true
+    useAlternativeNames = false
+}
+
 class CampgroundFragment : Fragment() {
 
     private val campgrounds = mutableListOf<Campground>()
@@ -81,7 +88,7 @@ class CampgroundFragment : Fragment() {
                         CampgroundResponse.serializer(),
                         json.jsonObject.toString()
                     )
-                    parsedJson.data?.let { list ->
+                    parsedJson.data?.let { list: List<Campground> ->
                         campgrounds.addAll(list)
                         campgroundAdapter.notifyDataSetChanged()
                     }
